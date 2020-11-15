@@ -27,7 +27,15 @@ function App() {
     <div>
       <Switch {...getTogglerProps({on})} />
       <hr />
-      <button {...getTogglerProps()}>{on ? 'on' : 'off'}</button>
+      <button
+        {...getTogglerProps({
+          'aria-label': 'custom-button',
+          onClick: ev => console.info('onButtonClick', ev.type),
+          id: 'custom-button-id',
+        })}
+      >
+        {on ? 'on' : 'off'}
+      </button>
     </div>
   )
 }
