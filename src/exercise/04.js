@@ -10,7 +10,7 @@ function useToggle() {
   const [on, setOn] = React.useState(false)
   const toggle = () => setOn(!on)
 
-  function getTogglerProps({onClick, ...otherProps}) {
+  function getTogglerProps({onClick, ...otherProps} = {}) {
     return {
       'aria-pressed': on,
       onClick: callAllFn(onClick, toggle),
@@ -27,15 +27,7 @@ function App() {
     <div>
       <Switch {...getTogglerProps({on})} />
       <hr />
-      <button
-        {...getTogglerProps({
-          'aria-label': 'custom-button',
-          onClick: ev => console.info('onButtonClick', ev.type),
-          id: 'custom-button-id',
-        })}
-      >
-        {on ? 'on' : 'off'}
-      </button>
+      <button {...getTogglerProps()}>{on ? 'on' : 'off'}</button>
     </div>
   )
 }
