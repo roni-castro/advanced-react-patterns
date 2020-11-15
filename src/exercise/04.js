@@ -9,16 +9,36 @@ function useToggle() {
   const toggle = () => setOn(!on)
 
   const togglerProps = {'aria-pressed': on, onClick: toggle}
-  return {on, toggle, togglerProps}
+
+  function getTogglerProps({onClick, ...otherProps}) {
+    return {
+      'aria-pressed': on,
+      ...otherProps,
+      onClick: onClick
+        ? () => {
+            onClick()
+            toggle()
+          }
+        : toggle,
+    }
+  }
+
+  return {on, toggle, getTogglerProps}
 }
 
 function App() {
-  const {on, togglerProps} = useToggle()
+  const {on, getTogglerProps} = useToggle()
   return (
     <div>
-      <Switch on={on} {...togglerProps} />
+      <Switch {...getTogglerProps({on})} />
       <hr />
-      <button aria-label="custom-button" {...togglerProps}>
+      <button
+        {...getTogglerProps({
+          'aria-label': 'custom-button',
+          onClick: () => console.info('onButtonClick'),
+          id: 'custom-button-id',
+        })}
+      >
         {on ? 'on' : 'off'}
       </button>
     </div>
