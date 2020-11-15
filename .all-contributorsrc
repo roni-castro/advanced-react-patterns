@@ -249,6 +249,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "DaleSeo",
+      "name": "Dale Seo",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5466341?v=4",
+      "profile": "https://www.daleseo.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "bobbywarner",
+      "name": "Bobby Warner",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/554961?v=4",
+      "profile": "http://bobbywarner.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoHost": "https://github.com",
