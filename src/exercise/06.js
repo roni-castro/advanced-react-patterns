@@ -3,6 +3,7 @@
 
 import * as React from 'react'
 import {Switch} from '../switch'
+import warning from 'warning'
 
 const callAll = (...fns) => (...args) => fns.forEach(fn => fn?.(...args))
 
@@ -28,14 +29,25 @@ function toggleReducer(state, {type, initialState}) {
 function useToggle({
   initialOn = false,
   reducer = toggleReducer,
-  on: controlledOn = null,
+  on: controlledOn,
   onChange,
+  readOnly = false,
 } = {}) {
   const {current: initialState} = React.useRef({on: initialOn})
   const [state, dispatch] = React.useReducer(reducer, initialState)
 
   const onIsControlled = controlledOn != null
+  const hasOnChange = Boolean(onChange)
   const on = onIsControlled ? controlledOn : state.on
+
+  React.useEffect(() => {
+    warning(
+      !(onIsControlled && !hasOnChange && !readOnly),
+      `An \`on\` props was passed to \`useToggle\` without an \`onChange\` handler. 
+      This will render a read-only toggle. If you want it to be mutable, use \`initialOn\`.
+      Otherwise, set either the \`onChange\` or \`readOnly\` to true`,
+    )
+  }, [onIsControlled, hasOnChange, readOnly])
 
   function dispatchWithOnChange(action) {
     if (!onIsControlled) {
@@ -48,10 +60,11 @@ function useToggle({
 
   const reset = () => dispatch({type: actionTypes.reset, initialState})
 
-  function getTogglerProps({onClick, ...props} = {}) {
+  function getTogglerProps({onClick, readOnly, ...props} = {}) {
     return {
       'aria-pressed': on,
       onClick: callAll(onClick, toggle),
+      'read-only': readOnly?.toString(),
       ...props,
     }
   }
@@ -72,9 +85,14 @@ function useToggle({
   }
 }
 
-function Toggle({on: controlledOn, onChange}) {
-  const {on, getTogglerProps} = useToggle({on: controlledOn, onChange})
-  const props = getTogglerProps({on})
+function Toggle({on: controlledOn, onChange, readOnly, initialOn}) {
+  const {on, getTogglerProps} = useToggle({
+    on: controlledOn,
+    initialOn,
+    onChange,
+    readOnly,
+  })
+  const props = getTogglerProps({on, readOnly})
   return <Switch {...props} />
 }
 
